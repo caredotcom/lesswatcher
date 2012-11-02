@@ -1,0 +1,84 @@
+#!/usr/bin/env node
+
+var fs = require('fs'), // from core nodejs
+    hound = require('hound'), // https://npmjs.org/package/hound
+    less = require('less'), // https://npmjs.org/package/less
+    execSync = require('exec-sync'), // https://npmjs.org/package/exec-sync
+    argv = require('optimist') // https://npmjs.org/package/optimist
+      .alias('l', 'lessdir')
+      .alias('c', 'cssdir')
+      .demand('l', 'c')
+      .usage('Usage: lesswatcher --l=/path/to/lessdir --c=/path/to/cssdir [--o=yui]')
+      .default('l', '/work/intl/web-app/less')
+      .default('c', '/work/intl/web-app/css')
+      .argv,
+    LESS_DIR = argv.l,
+    CSS_DIR = argv.c,
+    CSS_DIR_LEN = CSS_DIR.length,
+    lesscList = [],
+    pjson = require('lesswatcher/package.json')
+    yui = (argv.o==='yui' ? " -yui-compress" : false) // lesswatcher --o=yui to enable
+    ;
+
+/* Startup Message */
+console.log("LessWatcher " + pjson.version + " activated, watching these directories:");
+console.log("LESS_DIR: " + argv.l);
+console.log("CSS_DIR: " + argv.c);
+console.log("(If this isn't right for your project, simply call lesswatcher with --l=/your/less/dir --c=/your/css/dir )");
+console.log("Changes to .less files in *either* directory will trigger lessc"
+  + " on all the .less files in " + CSS_DIR + ".");
+console.log("Optimization enabled (e.g. via --o=yui)?: " + yui);
+console.log("*** IMPORTANT:  Adding new files requires restarting lesswatcher! ***");
+console.log("*** IMPORTANT:  Watch out for lessc compilation errors; they trigger program exit! ***");
+console.log("Happy coding. Oh and don't forget to use LiveReload! :)");
+console.log("Waiting for .less changes... \n");
+
+
+// Self-explanatory
+var traverseFsToFindLessFiles = function(currentPath){
+  var files = fs.readdirSync(currentPath); 
+  for(var i in files){
+    var currentFile = currentPath + '/' + files[i];
+    var stats = fs.statSync(currentFile);
+    if(stats.isFile()){
+      if(currentFile.match(/\.less$/)){
+        var isInCssDir = (CSS_DIR===currentPath.substring(0,CSS_DIR_LEN));
+        watchFile(currentFile,isInCssDir); 
+      }
+    } else if(stats.isDirectory()){
+      traverseFsToFindLessFiles(currentFile);
+    }
+  }
+};
+
+// watch given .less file with hound, and create event listeners
+var watchFile = function(lessFile,isInCssDir){
+  var watcher = hound.watch(lessFile);
+  if(isInCssDir){
+    lesscList.push(lessFile);
+    //console.log(lessFile + " added to lesscList");
+  }
+  watcher.on('change', function(file, stats) {
+    var now = new Date();
+    console.log(now.toLocaleString() + " - detected change to \n" + file);
+    console.log("Commencing compilation of " + lesscList.length + " files..." );
+    lesscList.forEach(doLessc);
+    console.log("... done!\nWaiting for further .less changes...");
+  });  
+};
+
+// Do lessc on all files in CSS_DIR 
+// (This "recompile everything on any change" is a little crude, but simple and effective.)
+var doLessc = function(lessFile,idx,ar){
+  // naming convention: foo.less => foo.css
+  var cssFile = lessFile.slice(0,-5)+'.css';
+  // compiler syntax: lessc foo.less foo.css -yui-compress
+  var optflag = yui||'';
+  execSync("lessc " + lessFile + " " + cssFile + optflag); 
+  console.log("lessc " + lessFile + "\n    > " + cssFile + optflag);
+};
+
+// Main action... go! 
+traverseFsToFindLessFiles(LESS_DIR); 
+traverseFsToFindLessFiles(CSS_DIR);
+
