@@ -1,44 +1,63 @@
 #!/usr/bin/env node
 
-var fs = require('fs'), // from core nodejs
-    hound = require('hound'), // https://npmjs.org/package/hound
-    less = require('less'), // https://npmjs.org/package/less
-    execSync = require('exec-sync'), // https://npmjs.org/package/exec-sync
-    argv = require('optimist') // https://npmjs.org/package/optimist
-      .alias('l', 'lessdir')
-      .alias('c', 'cssdir')
-      .demand('l', 'c')
-      .usage('Usage: lesswatcher --l=/path/to/lessdir --c=/path/to/cssdir [--o=yui]')
-      .default('l', '/work/intl/web-app/less')
-      .default('c', '/work/intl/web-app/css')
-      .argv,
-    LESS_DIR = argv.l,
-    CSS_DIR = argv.c,
-    CSS_DIR_LEN = CSS_DIR.length,
-    lesscList = [],
-    pjson = require('lesswatcher/package.json')
-    yui = (argv.o==='yui' ? " -yui-compress" : false) // lesswatcher --o=yui to enable
-    ;
+/* Dependencies */
+var fs = require("fs") // from core nodejs
+  , less = require("less") // https://npmjs.org/package/less
+  , hound = require("hound") // https://npmjs.org/package/hound
+  , execSync = require("exec-sync") // https://npmjs.org/package/exec-sync
+  , argv = require("optimist").argv // https://npmjs.org/package/optimist
+;
 
-/* Startup Message */
-console.log("LessWatcher " + pjson.version + " activated, watching these directories:");
-console.log("LESS_DIR: " + argv.l);
-console.log("CSS_DIR: " + argv.c);
-console.log("(If this isn't right for your project, simply call lesswatcher with --l=/your/less/dir --c=/your/css/dir )");
-console.log("Changes to .less files in *either* directory will trigger lessc"
-  + " on all the .less files in " + CSS_DIR + ".");
-console.log("Optimization enabled (e.g. via --o=yui)?: " + yui);
-console.log("*** IMPORTANT:  Adding new files requires restarting lesswatcher! ***");
-console.log("*** IMPORTANT:  Watch out for lessc compilation errors; they trigger program exit! ***");
-console.log("Happy coding. Oh and don't forget to use LiveReload! :)");
-console.log("Waiting for .less changes... \n");
+/* Configuration */
+var pwd = process.cwd()
+  , confLocalPath = (pwd + "/lesswatcher-conf.json")
+  , conf
+  , confFile
+  , loadConf = (function(){
+      if(argv.conf){
+        confFile = argv.conf;
+        if(fs.existsSync(confFile)){          
+          conf = require(confFile);
+        } else {
+          console.log("Doh! can't find custom --conf " + confFile);
+          process.exit();
+        }
+      } else if(fs.existsSync(confLocalPath)){
+        // console.log("Found custom conf in standard location " + confLocalPath);
+        confFile = confLocalPath;
+        conf = require(confLocalPath);
+      } else {
+        //console.log("Using default conf");  
+        confFile = "built-in defaults";
+        conf = require("lesswatcher/lib/lesswatcher-conf.json");
+      }
+    })()
+  , LESSC_COMPILER = (argv.compiler || conf.LESSC_COMPILER || "lesswatcher-lessc")
+  , COMPILER_VERSION = execSync(LESSC_COMPILER + " --version")
+  , LESS_DIR = (argv.less_dir || conf.LESS_DIR || (pwd + "/less"))
+  , CSS_DIR = (argv.css_dir || conf.CSS_DIR || (pwd + "/css"))
+  // LESSC flags:
+  //, LESSC_VERBOSE = (argv.lessc_verbose || conf.LESSC_OPTS.verbose) ? "--verbose " : ""
+  , LESSC_X = (argv.lessc_x || conf.LESSC_OPTS.x) ? "--x " : ""
+  , LESSC_YUI = (argv.lessc_yui || conf.LESSC_OPTS.yui) ? "--yui-compress " : ""
+  //, LESSC_O0 = (argv.lessc_o0 || conf.LESSC_OPTS.O0) ? " --O0" : ""
+  //, LESSC_O1 = (argv.lessc_o1 || conf.LESSC_OPTS.O1) ? " --O1" : ""
+  //, LESSC_O2 = (argv.lessc_o2 || conf.LESSC_OPTS.O2) ? " --O2" : ""
+  //, LESSC_LINES = (argv.lessc_lines || conf.LESSC_OPTS.lines) ? " --line-numbers" : ""
+  , LESSC_FLAGS = LESSC_X + LESSC_YUI
+;
 
+/* Other vars */
+var CSS_DIR_LEN = CSS_DIR.length
+  , lesscList = []
+  , pjson = require("lesswatcher/package.json") // to obtain version
+;
 
 // Self-explanatory
 var traverseFsToFindLessFiles = function(currentPath){
   var files = fs.readdirSync(currentPath); 
   for(var i in files){
-    var currentFile = currentPath + '/' + files[i];
+    var currentFile = currentPath + "/" + files[i];
     var stats = fs.statSync(currentFile);
     if(stats.isFile()){
       if(currentFile.match(/\.less$/)){
@@ -58,7 +77,7 @@ var watchFile = function(lessFile,isInCssDir){
     lesscList.push(lessFile);
     //console.log(lessFile + " added to lesscList");
   }
-  watcher.on('change', function(file, stats) {
+  watcher.on("change", function(file, stats) {
     var now = new Date();
     console.log(now.toLocaleString() + " - detected change to \n" + file);
     console.log("Commencing compilation of " + lesscList.length + " files..." );
@@ -71,14 +90,60 @@ var watchFile = function(lessFile,isInCssDir){
 // (This "recompile everything on any change" is a little crude, but simple and effective.)
 var doLessc = function(lessFile,idx,ar){
   // naming convention: foo.less => foo.css
-  var cssFile = lessFile.slice(0,-5)+'.css';
-  // compiler syntax: lessc foo.less foo.css -yui-compress
-  var optflag = yui||'';
-  execSync("lessc " + lessFile + " " + cssFile + optflag); 
-  console.log("lessc " + lessFile + "\n    > " + cssFile + optflag);
+  var cssFile = lessFile.slice(0,-5)+".css";
+  // lessc compiler syntax: lessc foo.less foo.css --yui-compress
+  execSync(LESSC_COMPILER + " " + lessFile + " " + cssFile + " " + LESSC_FLAGS);
+  console.log(LESSC_COMPILER + " " + lessFile + "\n    > " + cssFile + " " + LESSC_FLAGS);
 };
 
-// Main action... go! 
-traverseFsToFindLessFiles(LESS_DIR); 
-traverseFsToFindLessFiles(CSS_DIR);
+/* Help Message */
+var printHelp = function(){
+  console.log("Lesswatcher version: " + pjson.version);
+  console.log("usage: lesswatcher [options]");
+  console.log("");
+  console.log("options:");
+  console.log("  -h, --help                                 Print help (this message) and exit.");
+  console.log("  --less_dir=/foo/less                       Override the default LESS_DIR");
+  console.log("  --css_dir=/foo/css                         Override the default CSS_DIR");
+  console.log("  --compiler=lessc                          Point to a different lessc compiler"); 
+  console.log("  --conf=/foo/lesswatcher-conf.json          Use a custom conf file");   
+  console.log("  -v, --version                              Print version number and exit.");
+  console.log("");  
+  //console.log(require("lesswatcher/lib/lesswatcher-conf.json"));
+  console.log("Report bugs to: http://github.com/caredotcom/lesswatcher.js/issues");
+  console.log("See also the README here: <http://npmjs.org/lesswatcher>");
+  console.log("");  
+}
 
+/* Startup Message */
+var printStartup = function(){
+  console.log("LessWatcher " + pjson.version + " activated");
+  console.log("");  
+  console.log("  Configuration from: " + confFile);
+  console.log("  LESSC_COMPILER: " + LESSC_COMPILER + " --version = \"" + COMPILER_VERSION + "\"");
+  console.log("  LESS_DIR: " + LESS_DIR);
+  console.log("  CSS_DIR: " + CSS_DIR);
+  console.log("  LESSC_FLAGS: " + (LESSC_FLAGS || "none"));
+  console.log("(If this isn't right for your project, override them w/ CLI args or custom lesswatcher-conf.json)");
+  console.log("");  
+  console.log("*** IMPORTANT:  Adding new files requires restarting lesswatcher! ***");
+  console.log("*** IMPORTANT:  Watch out for lessc compilation errors; they trigger program exit! ***");
+  console.log("");  
+  console.log("Happy coding! :)");
+  console.log("Waiting for .less changes... \n");
+};
+
+/* Go time! */
+var firedUpReadyToGo = (function(){
+  if(argv.h || argv.help){
+    printHelp();
+    process.exit();
+  } else if (argv.v || argv.version){
+    console.log("This is lesswatcher version: " + pjson.version);
+    process.exit();
+  } else {
+    printStartup();
+    traverseFsToFindLessFiles(LESS_DIR); 
+    traverseFsToFindLessFiles(CSS_DIR);    
+  }
+})();

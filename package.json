@@ -1,10 +1,10 @@
 { "name": "lesswatcher"
-, "version": "0.0.10"
-, "private": true
+, "version": "0.1.1"
 , "description": "LESS compiler with filesystem watcher"
+, "license": "MIT"
 , "author": "Chris Weekly <cweekly@gmail.com>"
-, "contributors": [ "Ryan Kokoszka", "Charlie Low", "caffeine"]
-, "keywords" : [ "less", "css", "watch", "command", "shell" ]
+, "contributors": [ "Ryan Kokoszka", "Charlie Low"]
+, "keywords" : [ "less", "css", "watch", "command-line" ]
 , "engines": [ "node >= 0.8.10" ]
 , "dependencies": {
       "hound": "1.0.4"
@@ -12,5 +12,8 @@
     , "exec-sync": "0.1.5"
     , "optimist": "0.3.4"
   }
-, "bin" : { "lesswatcher" : "./bin/lesswatcher" }
+, "bin": { 
+     "lesswatcher": "./bin/lesswatcher"
+    ,"lesswatcher-lessc": "./node_modules/.bin/lessc" 
+  }
 }
