@@ -80,8 +80,7 @@ Default configuration:
     "CSS_DIR": "<directory-where-lesswatcher-was-invoked>/css",
     "LESSC_COMPILER": <lessc-version-bundled-with-lesswatcher>, 
     "LESSC_OPTS": {
-      "verbose": false,
-      "x": false,
+      "compress": false,
       "yui": false
     }
 
@@ -93,8 +92,7 @@ But customization is supported, via CLI args and/or custom conf files:
     --less_dir (string: fully-qualified path to your LESS files)
     --css_dir (string: fully-qualified path to your CSS files)
     --compiler (string: path to lessc compiler already on your system, e.g. to use a specific version vs what lesswatcher provides)
-    --lessc_verbose (pass "verbose" option to lessc, see less docs)
-    --lessc_x (pass "-x" option to lessc, see less docs)
+    --lessc_compress (pass "--compress" option to lessc, see less docs)
     --lessc_yui (pass "--yui-compress" option to lessc, see less docs)
  
   Example:

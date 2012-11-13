@@ -5,7 +5,7 @@
   "LESSC_COMPILER": null, 
 
   "LESSC_OPTS": {
-    "x": null,
+    "compress": null,
     "yui": null
   }
 }

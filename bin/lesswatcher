@@ -38,13 +38,13 @@ var pwd = process.cwd()
   , CSS_DIR = (argv.css_dir || conf.CSS_DIR || (pwd + "/css"))
   // LESSC flags:
   //, LESSC_VERBOSE = (argv.lessc_verbose || conf.LESSC_OPTS.verbose) ? "--verbose " : ""
-  , LESSC_X = (argv.lessc_x || conf.LESSC_OPTS.x) ? "--x " : ""
+  , LESSC_COMPRESS = (argv.lessc_compress || conf.LESSC_OPTS.compress) ? "--compress " : ""
   , LESSC_YUI = (argv.lessc_yui || conf.LESSC_OPTS.yui) ? "--yui-compress " : ""
   //, LESSC_O0 = (argv.lessc_o0 || conf.LESSC_OPTS.O0) ? " --O0" : ""
   //, LESSC_O1 = (argv.lessc_o1 || conf.LESSC_OPTS.O1) ? " --O1" : ""
   //, LESSC_O2 = (argv.lessc_o2 || conf.LESSC_OPTS.O2) ? " --O2" : ""
   //, LESSC_LINES = (argv.lessc_lines || conf.LESSC_OPTS.lines) ? " --line-numbers" : ""
-  , LESSC_FLAGS = LESSC_X + LESSC_YUI
+  , LESSC_FLAGS = LESSC_COMPRESS + LESSC_YUI
 ;
 
 /* Other vars */
@@ -102,16 +102,34 @@ var printHelp = function(){
   console.log("usage: lesswatcher [options]");
   console.log("");
   console.log("options:");
-  console.log("  -h, --help                                 Print help (this message) and exit.");
-  console.log("  --less_dir=/foo/less                       Override the default LESS_DIR");
-  console.log("  --css_dir=/foo/css                         Override the default CSS_DIR");
-  console.log("  --compiler=lessc                          Point to a different lessc compiler"); 
-  console.log("  --conf=/foo/lesswatcher-conf.json          Use a custom conf file");   
-  console.log("  -v, --version                              Print version number and exit.");
+  console.log("  -h, --help                         Print help (this message) and exit");
+  console.log("  -v, --version                      Print version number and exit");
+  console.log("  --compiler                         Use a different lessc compiler"); 
+  console.log("  --conf                             Use a custom conf file");   
+  console.log("  --css_dir                          Override the default CSS_DIR");
+  console.log("  --less_dir                         Override the default LESS_DIR");
+  console.log("  --lessc_compress                   Pass '--compress' flag to lessc compiler");
+  console.log("  --lessc_yui                        Pass '--yui-compress' flag to lessc compiler");
   console.log("");  
-  //console.log(require("lesswatcher/lib/lesswatcher-conf.json"));
-  console.log("Report bugs to: http://github.com/caredotcom/lesswatcher.js/issues");
-  console.log("See also the README here: <http://npmjs.org/lesswatcher>");
+  console.log("examples:"); 
+  console.log("lesswatcher --less_dir=<any-fully-qualified-path> --css_dir=<any-fully-qualified-path>");
+  console.log("            ^ CLI args like this override conf files."); 
+  console.log("");   
+  console.log("lesswatcher --conf=<any-fully-qualified-path>/lesswatcher-conf.json");
+  console.log("            ^ You can specify an explicit conf file location like this...");  
+  console.log("              ... or simply create a valid JSON file named 'lesswatcher-conf.json' ");
+  console.log("              in the same directory where you invoke lesswatcher.");
+  console.log("");    
+  console.log("lesswatcher --compiler=lessc");
+  console.log("            ^ You can specify an explicit lessc executable like this");
+  console.log("            otherwise lesswatcher provides one for you, currently: ");
+  console.log("            " + COMPILER_VERSION );
+  console.log("");    
+  console.log("lesswatcher --lessc_yui");
+  console.log("            ^ You can pass an optimization flag like --yui-compress to lessc this way");
+  console.log("");  
+  console.log("Please also see the README: <http://npmjs.org/lesswatcher>");
+  console.log("Please report bugs to: http://github.com/caredotcom/lesswatcher.js/issues");
   console.log("");  
 }
 

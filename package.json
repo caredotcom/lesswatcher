@@ -1,5 +1,5 @@
 { "name": "lesswatcher"
-, "version": "0.1.1"
+, "version": "0.1.2"
 , "description": "LESS compiler with filesystem watcher"
 , "license": "MIT"
 , "author": "Chris Weekly <cweekly@gmail.com>"
