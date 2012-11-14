@@ -2,7 +2,7 @@
 
 /* Dependencies */
 var fs = require("fs") // from core nodejs
-  , less = require("less") // https://npmjs.org/package/less
+  //, less = require("less") // https://npmjs.org/package/less
   , hound = require("hound") // https://npmjs.org/package/hound
   , execSync = require("exec-sync") // https://npmjs.org/package/exec-sync
   , argv = require("optimist").argv // https://npmjs.org/package/optimist
@@ -32,7 +32,7 @@ var pwd = process.cwd()
         conf = require("lesswatcher/lib/lesswatcher-conf.json");
       }
     })()
-  , LESSC_COMPILER = (argv.compiler || conf.LESSC_COMPILER || "lesswatcher-lessc")
+  , LESSC_COMPILER = (argv.compiler || conf.LESSC_COMPILER || "lessc") // lesswatcher-lessc
   , COMPILER_VERSION = execSync(LESSC_COMPILER + " --version")
   , LESS_DIR = (argv.less_dir || conf.LESS_DIR || (pwd + "/less"))
   , CSS_DIR = (argv.css_dir || conf.CSS_DIR || (pwd + "/css"))
@@ -98,9 +98,12 @@ var doLessc = function(lessFile,idx,ar){
 
 /* Help Message */
 var printHelp = function(){
-  console.log("Lesswatcher version: " + pjson.version);
+  console.log("Lesswatcher help for version: " + pjson.version);
+  console.log("");   
+  console.log("Please also see the README: <http://npmjs.org/lesswatcher>");  
+  console.log("");   
   console.log("usage: lesswatcher [options]");
-  console.log("");
+  console.log("");   
   console.log("options:");
   console.log("  -h, --help                         Print help (this message) and exit");
   console.log("  -v, --version                      Print version number and exit");
@@ -120,32 +123,41 @@ var printHelp = function(){
   console.log("              ... or simply create a valid JSON file named 'lesswatcher-conf.json' ");
   console.log("              in the same directory where you invoke lesswatcher.");
   console.log("");    
-  console.log("lesswatcher --compiler=lessc");
-  console.log("            ^ You can specify an explicit lessc executable like this");
-  console.log("            otherwise lesswatcher provides one for you, currently: ");
-  console.log("            " + COMPILER_VERSION );
+  console.log("lesswatcher --compiler=lessc-1.3.1");
+  console.log("            ^ You can specify an explicit lessc executable like this...");
+  console.log("              ... e.g. if you have aliases for different versions."); 
+  //console.log("            otherwise lesswatcher provides one for you, currently: ");
+  //console.log("            " + COMPILER_VERSION );
   console.log("");    
   console.log("lesswatcher --lessc_yui");
   console.log("            ^ You can pass an optimization flag like --yui-compress to lessc this way");
+  console.log("");
+  console.log("*** Suggestion: Kill lesswatcher before performing invasive SCM operations ***");
+  console.log("*** Suggestion: Use LiveReload for browser asset auto-refresh aka webdev bliss  ***");  
   console.log("");  
-  console.log("Please also see the README: <http://npmjs.org/lesswatcher>");
-  console.log("Please report bugs to: http://github.com/caredotcom/lesswatcher.js/issues");
+  console.log("*** IMPORTANT:  Adding new files requires restarting lesswatcher! ***");
+  console.log("*** IMPORTANT:  Watch this space for lessc compilation errors; they trigger program exit! ***");
+  console.log("");    
+  console.log("Please report bugs to cweekly@gmail.com (during beta)"); //http://github.com/caredotcom/lesswatcher.js/issues");
   console.log("");  
 }
 
 /* Startup Message */
 var printStartup = function(){
-  console.log("LessWatcher " + pjson.version + " activated");
+  console.log("LessWatcher version " + pjson.version + " activated");
   console.log("");  
   console.log("  Configuration from: " + confFile);
   console.log("  LESSC_COMPILER: " + LESSC_COMPILER + " --version = \"" + COMPILER_VERSION + "\"");
   console.log("  LESS_DIR: " + LESS_DIR);
   console.log("  CSS_DIR: " + CSS_DIR);
   console.log("  LESSC_FLAGS: " + (LESSC_FLAGS || "none"));
-  console.log("(If this isn't right for your project, override them w/ CLI args or custom lesswatcher-conf.json)");
+  console.log("  (If these settings aren't right for your project, override them w/ CLI args or custom lesswatcher-conf.json)");
+  console.log("");  
+  console.log("*** Suggestion: Kill lesswatcher before performing invasive SCM operations ***");
+  console.log("*** Suggestion: Use LiveReload for browser asset auto-refresh aka webdev bliss  ***");  
   console.log("");  
   console.log("*** IMPORTANT:  Adding new files requires restarting lesswatcher! ***");
-  console.log("*** IMPORTANT:  Watch out for lessc compilation errors; they trigger program exit! ***");
+  console.log("*** IMPORTANT:  Watch this space for lessc compilation errors; they trigger program exit! ***");
   console.log("");  
   console.log("Happy coding! :)");
   console.log("Waiting for .less changes... \n");

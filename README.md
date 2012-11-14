@@ -21,7 +21,7 @@ There are many other tools for doing offline lessc, some with nice GUIs and CLIs
 
 ### What about other similar NPM modules?
 
-There are other npm modules that do lessc with directory watching, and some of them even support Windows, but at the time I wrote Lesswatcher, none of them seemed to support a distinction between .less files to watch for changes, versus .less files to compile directly to corresponding .css. So using such tools results in compiling every watched .less file into .css, even for .less files used only in an @import to another .less file. Generating such unused .css artifacts bothered me, enough to motivate writing a new tool.
+There are other npm modules that do lessc with directory watching, but at the time I wrote Lesswatcher, none of them seemed to support both Windows AND the distinction between .less files to watch for changes, versus .less files to compile directly to corresponding .css. So using such tools results in compiling every watched .less file into .css, even for .less files used only in an @import to another .less file. Generating such unused .css artifacts bothered me, enough to motivate writing a new tool.
 
 
 ## Lesswatcher Conventions
@@ -36,35 +36,46 @@ Lesswatcher supports a convention of managing LESS files in two places:
 
 Lesswatcher watches the filesystem for changes to .less files in both places, then compiles just the CSS_DIR's .less files. This way you avoid generating unused .css files, which would otherwise litter your project and add to bloat and potential confusion. 
 
-The generated .css files should be managed in source control, and referenced directly in markup or app config just like any other .css file. The generated .css files should never be edited by hand. (Managing compiled assets in scm is usually a bad idea, but in this case it's justified given the benefits of offline lessc.)
+The generated .css files should be managed in source control, and referenced directly in markup or app config just like any other .css file. The generated .css files should never be edited by hand. (Managing compiled assets in scm is not always a great idea, but in this case it's justified given the benefits of offline lessc.)
 
 
 ## Installation
 
 ###Prerequisites:
-1. Install latest **node** (e.g. 0.8.11) and **npm** (e.g. 1.1.62)
-  (If on Windows, use the official nodejs.org/download/ MSI installer)
+1. Get **node** and **npm**
+  (The official installer from nodejs.org/download/ is recommended, esp. for Windows users.)
 
 2. Edit your $PATH env var:
-  **Add the npm/bin directory to your $PATH**
-  (Its location depends on your system, might be e.g. /usr/local/share/npm/bin)
+  **Add the npm global bin directory to your $PATH**
+  (Its location depends on your system, on OSX it might be e.g. /usr/local/share/npm/bin.)
+  (NOTE on Windows 7, try "C:\Users\<username>\AppData\Roaming\npm", without "bin".)
 
 3. Add a new $NODE_PATH env var:
-  **Add the npm/lib/node_modules directory to $NODE_PATH**
-  (npm/lib is a peer of npm/bin, it's where node's global modules are installed)
+  **Add the npm global node_modules directory to $NODE_PATH**
+  (Its location depends on your system, on OSX it might be e.g. /usr/local/share/npm/lib/node_modules.)
+  (NOTE on Windows 7, try "C:\Users\<username>\AppData\Roaming\npm\node_modules", without "lib")
 
-###Install globally:
-4. Install lesswatcher globally:
+4. Get LESS:
+  Install the official **less** package globally
+    **npm install -g less**
+  (This will make the "lessc" executable available on your system.)
 
-    **$ npm install -g lesswatcher**
 
-###Optional Configuration:
+###Install lesswatcher globally:
+5. Install lesswatcher globally:
 
-5. Optionally create a **lesswatcher-config.json** file to override the default settings. (See Configuration section for details.)
+    **npm install -g lesswatcher**
 
+
+###Test installation
 6. See if it worked! Just cd to your project's web-app directory (i.e. the parent of /less and /css) and type:
 
-    **$ lesswatcher**
+    **lesswatcher --help**
+
+
+###Optional Configuration:
+7. Optionally create a **lesswatcher-config.json** file to override the default settings. (See Configuration section for details.)
+
 
 That's it! Now, editing .less files will trigger lessc on all less files under your CSS_DIR's directory (with console logging in the terminal window).
 
@@ -84,7 +95,7 @@ Default configuration:
       "yui": false
     }
 
-But customization is supported, via CLI args and/or custom conf files:
+Customization is supported, via CLI args and/or custom conf files:
 
 ####1. Arg overrides: 
   Invoke lesswatcher with CLI args to override corresponding conf settings:
@@ -97,16 +108,16 @@ But customization is supported, via CLI args and/or custom conf files:
  
   Example:
   
-    $ lesswatcher --less_dir=/special/place/for/less --css_dir=/my/very/own/css --compiler=lessc --lessc_yui
+    lesswatcher --less_dir=/special/place/for/less --css_dir=/my/very/own/css --compiler=lessc --lessc_yui
 
-Any CLI arg provided will trump corresponding values from the conf files described below.
+  Any CLI arg provided will trump corresponding values from the conf files described below.
 
 ####2. Custom conf file (custom location) 
   For maximum control, you can specify the location of a custom conf file, by invoking lesswatcher with a --conf argument, e.g.
   
-    $ lesswatcher --conf=/fully-qualified-path-to/custom-lesswatcher-conf.json
+    lesswatcher --conf=/fully-qualified-path-to/custom-lesswatcher-conf.json
 
-This configuration file will trump any settings in the default custom conf file location described next.
+  This configuration file will trump any settings in the default custom conf file location described next.
 
 ####3. Custom conf file (default location) 
   For convenience, instead of specifying the location of your custom conf, you can simply put it in a file named **"lesswatcher-conf.json"** in the same web-app dir from which you invoke lesswatcher. Note it must use valid JSON syntax. Any values not provided will fall back to the defaults.
@@ -116,16 +127,17 @@ This configuration file will trump any settings in the default custom conf file 
     "CSS_DIR": "/my/custom/dir/for/css",
     "LESSC_COMPILER": "/usr/local/bin/lessc-v1.3.1/lessc"
 
-Finally, any values not defined via CLI arg or conf file will fall back to the defaults. 
+  Finally, any values not defined via CLI arg or conf file will fall back to the defaults. 
 
 
 ## TODO - Possible future features
 
-* support watching for newly created files without restart
-* show lessc errors instead of exiting
+  * support watching for newly created files without restart
+  * handle lessc errors gracefully instead of exiting
+  * bundle a version of lessc with lesswatcher so it's entirely standalone
 
 
 ## LICENSE
 
-See the LICENSE file. 
+  MIT Open Source License -- Please see the LICENSE file. 
 

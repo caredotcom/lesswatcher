@@ -1,6 +1,6 @@
 { "name": "lesswatcher"
-, "version": "0.1.3-rc2"
-, "description": "LESS compiler with filesystem watcher"
+, "version": "0.1.4-beta"
+, "description": "Command-line tool to trigger lessc when files change"
 , "preferGlobal": "true"
 , "license": "MIT"
 , "author": "Chris Weekly <cweekly@gmail.com>"
@@ -9,12 +9,10 @@
 , "engines": [ "node >= 0.8.10" ]
 , "dependencies": {
       "hound": "1.0.4"
-    , "less": "1.3.0"
     , "exec-sync": "0.1.5"
     , "optimist": "0.3.4"
   }
 , "bin": { 
      "lesswatcher": "./bin/lesswatcher"
-    ,"lesswatcher-lessc": "./node_modules/.bin/lessc" 
   }
 }
