@@ -1,5 +1,5 @@
 { "name": "lesswatcher"
-, "version": "0.1.4-beta"
+, "version": "0.1.5-beta"
 , "description": "Command-line tool to trigger lessc when files change"
 , "preferGlobal": "true"
 , "license": "MIT"

@@ -89,7 +89,7 @@ Default configuration:
 
     "LESS_DIR": "<directory-where-lesswatcher-was-invoked>/less",
     "CSS_DIR": "<directory-where-lesswatcher-was-invoked>/css",
-    "LESSC_COMPILER": <lessc-version-bundled-with-lesswatcher>, 
+    "LESSC_COMPILER": "lessc", 
     "LESSC_OPTS": {
       "compress": false,
       "yui": false
@@ -102,13 +102,13 @@ Customization is supported, via CLI args and/or custom conf files:
   
     --less_dir (string: fully-qualified path to your LESS files)
     --css_dir (string: fully-qualified path to your CSS files)
-    --compiler (string: path to lessc compiler already on your system, e.g. to use a specific version vs what lesswatcher provides)
+    --compiler (string: path to specific lessc compiler already on your system)
     --lessc_compress (pass "--compress" option to lessc, see less docs)
     --lessc_yui (pass "--yui-compress" option to lessc, see less docs)
  
   Example:
   
-    lesswatcher --less_dir=/special/place/for/less --css_dir=/my/very/own/css --compiler=lessc --lessc_yui
+    lesswatcher --less_dir=/special/place/for/less --css_dir=/my/very/own/css --compiler=/usr/local/bin/lessc-v1.3.1/lessc --lessc_yui
 
   Any CLI arg provided will trump corresponding values from the conf files described below.
 
