@@ -43,7 +43,9 @@ The generated .css files should be managed in source control, and referenced dir
 
 ###Prerequisites:
 1. Get **node** and **npm**
-  (The official installer from nodejs.org/download/ is recommended, esp. for Windows users.)
+  (The official installer from nodejs.org/download/ is recommended for Windows users.)
+  As of 20130430, at least one of lesswatcher's dependencies (ffi) currently only works on node < 0.9.
+  Using nvm (node version manager) is the simple, recommended solution.
 
 2. Edit your $PATH env var:
   **Add the npm global bin directory to your $PATH**
@@ -55,26 +57,44 @@ The generated .css files should be managed in source control, and referenced dir
   (Its location depends on your system, on OSX it might be e.g. /usr/local/share/npm/lib/node_modules.)
   (NOTE on Windows 7, try "C:\Users\<username>\AppData\Roaming\npm\node_modules", without "lib")
 
-4. Get LESS:
+4. (Optional but recommended) install nvm to run multiple versions:
+  // Get NVM:
+    **git clone git://github.com/creationix/nvm.git ~/.nvm**
+
+  // Source nvm.sh to enable it:
+  // Tip: I put this line in my .zshrc profile so it's loaded automatically 
+    **. ~/.nvm/nvm.sh**
+
+  // Install node versions (anything besides 0.8 is optional):
+    **nvm install 0.8**
+    nvm install 0.10
+
+  // Use 0.8:
+    **nvm use 0.8**
+
+  // ... and optionally make it the default:
+    **nvm alias default 0.8****
+
+5. Get LESS:
   Install the official **less** package globally
     **npm install -g less**
   (This will make the "lessc" executable available on your system.)
 
 
 ###Install lesswatcher globally:
-5. Install lesswatcher globally:
+6. Install lesswatcher globally:
 
     **npm install -g lesswatcher**
 
 
 ###Test installation
-6. See if it worked! Just cd to your project's web-app directory (i.e. the parent of /less and /css) and type:
+7. See if it worked! Just cd to your project's web-app directory (i.e. the parent of /less and /css) and type:
 
     **lesswatcher --help**
 
 
 ###Optional Configuration:
-7. Optionally create a **lesswatcher-config.json** file to override the default settings. (See Configuration section for details.)
+8. Optionally create a **lesswatcher-config.json** file to override the default settings. (See Configuration section for details.)
 
 
 That's it! Now, editing .less files will trigger lessc on all less files under your CSS_DIR's directory (with console logging in the terminal window).

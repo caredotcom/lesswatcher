@@ -1,12 +1,12 @@
 { "name": "lesswatcher"
-, "version": "0.1.5-beta"
+, "version": "0.1.6"
 , "description": "Command-line tool to trigger lessc when files change"
 , "preferGlobal": "true"
 , "license": "MIT"
 , "author": "Chris Weekly <cweekly@gmail.com>"
 , "contributors": [ "Ryan Kokoszka", "Charlie Low"]
 , "keywords" : [ "less", "css", "watch", "command-line" ]
-, "engines": [ "node >= 0.8.10" ]
+, "engines": [ "node >= 0.8.10 < 0.9" ]
 , "dependencies": {
       "hound": "1.0.4"
     , "exec-sync": "0.1.5"
