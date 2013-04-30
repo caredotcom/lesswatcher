@@ -6,6 +6,10 @@
 , "author": "Chris Weekly <cweekly@gmail.com>"
 , "contributors": [ "Ryan Kokoszka", "Charlie Low"]
 , "keywords" : [ "less", "css", "watch", "command-line" ]
+, "repository" : { 
+    "type" : "git"
+  , "url" : "https://github.com/caredotcom/lesswatcher.git"
+  }
 , "engines": [ "node >= 0.8.10 < 0.9" ]
 , "dependencies": {
       "hound": "1.0.4"
