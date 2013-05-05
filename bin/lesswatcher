@@ -53,6 +53,14 @@ var CSS_DIR_LEN = CSS_DIR.length
   , pjson = require("lesswatcher/package.json") // to obtain version
 ;
 
+var isLessFile = function (file) {
+  return file.match(/\.less$/);
+};
+
+var isFileInCssDir = function (file) {
+  return CSS_DIR===file.substring(0,CSS_DIR_LEN);
+}
+
 // Self-explanatory
 var traverseFsToFindLessFiles = function(currentPath){
   var files = fs.readdirSync(currentPath); 
@@ -60,14 +68,28 @@ var traverseFsToFindLessFiles = function(currentPath){
     var currentFile = currentPath + "/" + files[i];
     var stats = fs.statSync(currentFile);
     if(stats.isFile()){
-      if(currentFile.match(/\.less$/)){
-        var isInCssDir = (CSS_DIR===currentPath.substring(0,CSS_DIR_LEN));
-        watchFile(currentFile,isInCssDir); 
+      if(isLessFile(currentFile)){
+        var isInCssDir = isFileInCssDir(currentFile);
+        watchFile(currentFile,isInCssDir);
       }
     } else if(stats.isDirectory()){
       traverseFsToFindLessFiles(currentFile);
     }
   }
+};
+
+var watchDirectoryForCreatedFiles = function (directory){
+  var watcher = hound.watch(directory);
+  watcher.on('create', function(file, stats) {
+    if (isLessFile(file)) {
+      var now = new Date();
+      console.log(now.toLocaleString() + " - detected creation of \n" + file);
+	  watchFile(file, isFileInCssDir(file));
+      console.log("Commencing compilation of " + lesscList.length + " files..." );
+      lesscList.forEach(doLessc);
+      console.log("... done!\nWaiting for further .less changes...");
+	}
+  });
 };
 
 // watch given .less file with hound, and create event listeners
@@ -92,8 +114,25 @@ var doLessc = function(lessFile,idx,ar){
   // naming convention: foo.less => foo.css
   var cssFile = lessFile.slice(0,-5)+".css";
   // lessc compiler syntax: lessc foo.less foo.css --yui-compress
-  execSync(LESSC_COMPILER + " " + lessFile + " " + cssFile + " " + LESSC_FLAGS);
-  console.log(LESSC_COMPILER + " " + lessFile + "\n    > " + cssFile + " " + LESSC_FLAGS);
+  var command = LESSC_COMPILER + " \"" + lessFile + "\" \"" + cssFile + "\" " + LESSC_FLAGS;
+  console.log(command);
+  execSyncHandlingAllErrors(command);
+};
+
+var execSyncHandlingAllErrors = function(command){
+  // http://stackoverflow.com/questions/7310521/node-js-best-practice-exception-handling
+  var d = require('domain').create();
+  d.on('error', function(err){
+    // handle the error safely
+    console.log(err);
+	console.log("... failed!\nWaiting for further .less changes...");
+  });
+
+  // catch the uncaught errors in this asynchronous or synchronous code block
+  d.run(function(){
+    // the asynchronous or synchronous code that we want to catch thrown errors on
+    execSync(command);
+  });
 };
 
 /* Help Message */
@@ -174,6 +213,8 @@ var firedUpReadyToGo = (function(){
   } else {
     printStartup();
     traverseFsToFindLessFiles(LESS_DIR); 
-    traverseFsToFindLessFiles(CSS_DIR);    
+    traverseFsToFindLessFiles(CSS_DIR);
+    watchDirectoryForCreatedFiles(LESS_DIR);
+    watchDirectoryForCreatedFiles(CSS_DIR);
   }
 })();
