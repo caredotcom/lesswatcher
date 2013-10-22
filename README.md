@@ -44,8 +44,6 @@ The generated .css files should be managed in source control, and referenced dir
 ###Prerequisites:
 1. Get **node** and **npm**
   (The official installer from nodejs.org/download/ is recommended for Windows users.)
-  As of 20130430, at least one of lesswatcher's dependencies (ffi) currently only works on node < 0.9.
-  Using nvm (node version manager) is the simple, recommended solution.
 
 2. Edit your $PATH env var:
   **Add the npm global bin directory to your $PATH**
@@ -65,15 +63,9 @@ The generated .css files should be managed in source control, and referenced dir
   // Tip: I put this line in my .zshrc profile so it's loaded automatically
     **. ~/.nvm/nvm.sh**
 
-  // Install node versions (anything besides 0.8 is optional):
+  // Install node versions (anything above latest 0.8 is optional):
     **nvm install 0.8**
     nvm install 0.10
-
-  // Use 0.8:
-    **nvm use 0.8**
-
-  // ... and optionally make it the default:
-    **nvm alias default 0.8****
 
 5. Get LESS:
   Install the official **less** package globally
@@ -152,9 +144,7 @@ Customization is supported, via CLI args and/or custom conf files:
 
 ## TODO - Possible future features
 
-  * support watching for newly created files without restart
-  * handle lessc errors gracefully instead of exiting
-  * bundle a version of lessc with lesswatcher so it's entirely standalone
+  * improve compilation granularity (better than "recompile everything on every change")
 
 
 ## LICENSE

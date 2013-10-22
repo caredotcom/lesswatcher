@@ -1,22 +1,22 @@
 { "name": "lesswatcher"
-, "version": "0.1.6"
+, "version": "0.1.8"
 , "description": "Command-line tool to trigger lessc when files change"
 , "preferGlobal": "true"
 , "license": "MIT"
 , "author": "Chris Weekly <cweekly@gmail.com>"
-, "contributors": [ "Ryan Kokoszka", "Charlie Low"]
+, "contributors": [ "Ryan Kokoszka", "Charlie Low, Ritchie Thai"]
 , "keywords" : [ "less", "css", "watch", "command-line" ]
-, "repository" : { 
+, "repository" : {
     "type" : "git"
   , "url" : "https://github.com/caredotcom/lesswatcher.git"
   }
-, "engines": [ "node >= 0.8.10 < 0.9" ]
+, "engines": [ "node >= 0.8.10" ]
 , "dependencies": {
-      "hound": "1.0.4"
-    , "exec-sync": "0.1.5"
-    , "optimist": "0.3.4"
+      "hound": ">=1.0.4"
+    , "exec-sync": ">=0.1.5"
+    , "optimist": ">=0.3.4"
   }
-, "bin": { 
+, "bin": {
      "lesswatcher": "./bin/lesswatcher"
   }
 }
