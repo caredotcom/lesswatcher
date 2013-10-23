@@ -47,42 +47,45 @@ The generated .css files should be managed in source control, and referenced dir
 
 2. Edit your $PATH env var:
   **Add the npm global bin directory to your $PATH**
-  (Its location depends on your system, on OSX it might be e.g. /usr/local/share/npm/bin.)
-  (NOTE on Windows 7, try "C:\Users\<username>\AppData\Roaming\npm", without "bin".)
+  (Its location depends on your system, on OSX it might be e.g. `/usr/local/share/npm/bin`.)
+  (NOTE on Windows 7, try `"C:\Users\<username>\AppData\Roaming\npm"`, without "bin".)
 
 3. Add a new $NODE_PATH env var:
   **Add the npm global node_modules directory to $NODE_PATH**
-  (Its location depends on your system, on OSX it might be e.g. /usr/local/share/npm/lib/node_modules.)
-  (NOTE on Windows 7, try "C:\Users\<username>\AppData\Roaming\npm\node_modules", without "lib")
+  (Its location depends on your system, on OSX it might be e.g.
+  `/usr/local/share/npm/lib/node_modules`.)
+  (NOTE on Windows 7, try 
+  `"C:\Users\<username>\AppData\Roaming\npm\node_modules"`
+  , without "lib")
 
 4. (Optional but recommended) install nvm to run multiple versions:
   // Get NVM:
-    **git clone git://github.com/creationix/nvm.git ~/.nvm**
+    **`git clone git://github.com/creationix/nvm.git ~/.nvm`**
 
   // Source nvm.sh to enable it:
   // Tip: I put this line in my .zshrc profile so it's loaded automatically
-    **. ~/.nvm/nvm.sh**
+    **`. ~/.nvm/nvm.sh`**
 
   // Install node versions (anything above latest 0.8 is optional):
-    **nvm install 0.8**
-    nvm install 0.10
+      **`nvm install 0.8`**
+      `nvm install 0.10`
 
 5. Get LESS:
   Install the official **less** package globally
-    **npm install -g less**
+    **`npm install -g less`**
   (This will make the "lessc" executable available on your system.)
 
 
 ###Install lesswatcher globally:
 6. Install lesswatcher globally:
 
-    **npm install -g lesswatcher**
+    **`npm install -g lesswatcher`**
 
 
 ###Test installation
 7. See if it worked! Just cd to your project's web-app directory (i.e. the parent of /less and /css) and type:
 
-    **lesswatcher --help**
+    **`lesswatcher --help`**
 
 
 ###Optional Configuration:
