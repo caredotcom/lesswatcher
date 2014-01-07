@@ -1,6 +1,11 @@
+# CAVEAT: 
+This "lesswatcher" module was written before Grunt-based solutions had matured sufficiently to meet our specific requirements. Things, of course, have changed. At this point (Jan 2014), using grunt-contrib-watch, grunt-contrib-less and grunt-concurrent is almost certainly a better solution. Grunt watch even supports livereload out of the box. The current version of lesswatcher (0.2.0) may be the last, unless someone using it wants to take over its maintenance (in which case please contact me - cweekly). Thanks! 
+
+
 # Lesswatcher
 
 A simple command-line utility to watch multiple directories for changes to LESS files (e.g. in both /less and /css), and trigger lessc compilation in a target directory (e.g. in just /css).
+
 
 
 ## Features
