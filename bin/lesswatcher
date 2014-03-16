@@ -57,9 +57,13 @@ var isLessFile = function (file) {
   return file.match(/\.less$/);
 };
 
-var isFileInCssDir = function (file) {
-  return CSS_DIR===file.substring(0,CSS_DIR_LEN);
-}
+var toCssFile = function (lessFile) {
+  return CSS_DIR + lessFile.replace(LESS_DIR, '').replace('less', 'css');
+};
+
+var isFileInCssDir = function (lessFile) {
+  return fs.existsSync(toCssFile(lessFile));
+};
 
 // Self-explanatory
 var traverseFsToFindLessFiles = function(currentPath){
@@ -112,7 +116,7 @@ var watchFile = function(lessFile,isInCssDir){
 // (This "recompile everything on any change" is a little crude, but simple and effective.)
 var doLessc = function(lessFile,idx,ar){
   // naming convention: foo.less => foo.css
-  var cssFile = lessFile.slice(0,-5)+".css";
+  var cssFile = toCssFile(lessFile);
   // lessc compiler syntax: lessc foo.less foo.css --yui-compress
   var command = LESSC_COMPILER + " \"" + lessFile + "\" \"" + cssFile + "\" " + LESSC_FLAGS;
   console.log(command);
