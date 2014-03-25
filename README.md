@@ -1,5 +1,7 @@
-# CAVEAT: 
-This "lesswatcher" module was written before Grunt-based solutions had matured sufficiently to meet our specific requirements. Things, of course, have changed. At this point (Jan 2014), using grunt-contrib-watch, grunt-contrib-less and grunt-concurrent is almost certainly a better solution. Grunt watch even supports livereload out of the box. The current version of lesswatcher (0.2.0) may be the last, unless someone using it wants to take over its maintenance (in which case please contact me - cweekly). Thanks! 
+# DEPRECATION WARNING: 
+This "lesswatcher" module is no longer being maintained. Others have continued to fork it and submit pull requests, so the code will remain visible here for the time being, but please consider using Grunt watch instead. 
+
+Background: Lesswatcher was written before Grunt-based solutions had matured sufficiently to meet our specific requirements. Things, of course, have changed. At this point (since Jan 2014), using grunt-contrib-watch, grunt-contrib-less and grunt-concurrent is simply a better solution. Grunt watch even supports livereload out of the box. The current version of lesswatcher (0.2.0) is almost certainly the last release. It is reported to have problems on Windows. If someone using lesswatcher wants to take over as primary maintainer, please contact me - cweekly. Thanks! 
 
 
 # Lesswatcher
