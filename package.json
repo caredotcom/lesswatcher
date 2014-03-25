@@ -1,11 +1,10 @@
 { "name": "lesswatcher"
-, "version": "0.2.0"
-, "description": "Command-line tool to trigger lessc when files change"
+, "version": "0.2.1"
+, "description": "DEPRECATED - Use Grunt instead! (This is an OBSOLETE command-line tool to trigger lessc when files change)"
 , "preferGlobal": "true"
 , "license": "MIT"
 , "author": "Chris Weekly <cweekly@gmail.com>"
-, "contributors": [ "Ryan Kokoszka", "Charlie Low, Ritchie Thai"]
-, "keywords" : [ "less", "css", "watch", "command-line" ]
+, "keywords" : [ "deprecated", "obsolete"]
 , "repository" : {
     "type" : "git"
   , "url" : "https://github.com/caredotcom/lesswatcher.git"
